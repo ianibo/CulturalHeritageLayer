@@ -92,13 +92,13 @@ class GetPOIController {
       europeana_search_result.channel.item.each { item ->
         // println "Processing ${item}"
         println "${item.'link'} ${item.'enrichment:place_latitude'} ${item.'enrichment:place_longitide'} ${item.'title'}"   
-        if ( ( item.title != null ) && ( item.title.length() > 0 ) ) {
-          hotspots.add([identifier:item.link,
-                        // distance:,
-                        title:item.title,
+        if ( ( item.title?.text() != null ) && ( item.title?.text().length() > 0 ) ) {
+          hotspots.add([identifier:item.link.text(),
+                        distance:0,
+                        title:item.title?.text(),
                         type:0,
-                        lat:item.'enrichment:place_latitude',
-                        lon:item.'enrichment:place_longitide',
+                        lat:item.'place_latitude'?.text(),
+                        lon:item.'place_longitude'?.text(),
                         action:[]])
         }
       }
