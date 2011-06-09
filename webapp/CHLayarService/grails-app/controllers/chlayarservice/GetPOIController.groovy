@@ -1,6 +1,9 @@
 package chlayarservice
 
 import grails.converters.*
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import groovyx.net.http.ContentType
+import grails.converters.*
 
 
 // An example request
@@ -16,9 +19,12 @@ import grails.converters.*
 //null
 //
 // Europeana spatial search http://api.europeana.eu/api/opensearch.rss?searchTerms=enrichment_place_latitude%3A[42+TO+48]+AND+enrichment_place_longitude%3A[10+TO+15]&wskey=xxx
-
+//
+// ApplicationHolder.application.config.apikey
 
 class GetPOIController {
+
+    def europeanaRestBuilder
 
     def index = { 
       println "Params..."
@@ -35,22 +41,67 @@ class GetPOIController {
 
       def result_object = [:]
 
+      def hotspots = []
+
       result_object.identifier = ""
-      result_object.hotspots = [
-        [ identifier:"id",
-          distance:"Distance",
-          title:"Distance",
-          type:"Distance",
-          lat:"Distance",
-          lon:"Distance",
-          action:[]
-        ]
-      ]
+      result_object.hotspots = hotspots
+      //result_object.hotspots = [
+      //  [ identifier:"id",
+      //    distance:"Distance",
+      //    title:"Distance",
+      //    type:"Distance",
+      //    lat:"Distance",
+      //    lon:"Distance",
+      //    action:[]
+      //  ]
+      //]
+
       // result_object.errorCode = ""
       // result_object.errorString = ""
       // result_object.nextPageKey = ""
       // result_object.morePages = ""
       // result_object.radius = ""
+
+    //withHttp(uri: "http://api.europeana.eu") {
+    //  def xml = get(path : '/api/opensearch.rss', 
+    //                query : [searchTerms : 'text:"art nouveau"', 
+    //                         wskey : ApplicationHolder.application.config.apikey], 
+    //                contentType : ContentType.XML)
+
+      // println "XML: ${xml}"
+    //  println "Class: ${xml.getClass().getName()}."
+    //  println "Result count: ${xml.channel.totalResults}"
+    //  println "Iterating results....  -${xml.@version}- title:-${xml.channel.title}-"
+    //  xml.channel.item.each {
+    //    println "Got an item - Title is ${it.title.text()}"
+    //  }
+    //}
+
+
+    def europeana_search_result = europeanaRestBuilder.get( path : "/api/opensearch.rss", 
+                                                             query : ['wskey' : ApplicationHolder.application.config.apikey,
+                                                                      'searchTerms' : 'enrichment_place_latitude:[42 TO 48] AND enrichment_place_longitude:[10 TO 15]'
+                                                                     ],
+                                                             contentType: ContentType.XML )
+
+    // println "Class: ${europeana_search_result.getClass().getName()}"
+
+      // def records = new XmlSlurper().parseText(europeana_search_result)
+
+      println "Iterating result items...."
+      europeana_search_result.channel.item.each { item ->
+        // println "Processing ${item}"
+        println "${item.'link'} ${item.'enrichment:place_latitude'} ${item.'enrichment:place_longitide'} ${item.'title'}"   
+        if ( ( item.title != null ) && ( item.title.length() > 0 ) ) {
+          hotspots.add([identifier:item.link,
+                        // distance:,
+                        title:item.title,
+                        type:0,
+                        lat:item.'enrichment:place_latitude',
+                        lon:item.'enrichment:place_longitide',
+                        action:[]])
+        }
+      }
 
       render(contentType:"text/json") {
  	 result_object
