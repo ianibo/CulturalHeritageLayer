@@ -31,6 +31,8 @@ class GetPOIController {
       println "${params.userId}"
       println "${params.layerName}"
       println "${params.version}"
+      // 52.377544
+      // 4.887339
       println "${params.lat}"
       println "${params.lon}"
       println "${params.countryCode}"
@@ -79,10 +81,22 @@ class GetPOIController {
     //  }
     //}
 
+    def plat = params.lat
+    def plon = params.lon
+
+    if ( ( params.lat == null ) && ( params.lon == null ) ) {
+      plat = 51.39920565355378
+      plon = 0.2197265625
+    }
+
+    def x1=plat-0.1
+    def y1=plon-0.1
+    def x2=plat+0.1
+    def y2=plon-0.1
 
     def europeana_search_result = europeanaRestBuilder.get( path : "/api/opensearch.rss", 
-                                                             query : ['wskey' : ApplicationHolder.application.config.apikey,
-                                                                      'searchTerms' : 'enrichment_place_latitude:[42 TO 48] AND enrichment_place_longitude:[10 TO 15]'
+                                                            query : ['wskey' : ApplicationHolder.application.config.apikey,
+                                                                      'searchTerms' : 'enrichment_place_latitude:[${x1} TO ${x2}] AND enrichment_place_longitude:[${y1} TO ${y2}]'
                                                                      ],
                                                              contentType: ContentType.XML )
 
