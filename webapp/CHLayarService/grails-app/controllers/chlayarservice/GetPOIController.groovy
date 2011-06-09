@@ -81,8 +81,8 @@ class GetPOIController {
     //  }
     //}
 
-    def plat = params.lat
-    def plon = params.lon
+    def plat = Double.parseDouble(params.lat)
+    def plon = Double.parseDouble(params.lon)
 
     if ( ( params.lat == null ) && ( params.lon == null ) ) {
       plat = 51.39920565355378
@@ -90,8 +90,9 @@ class GetPOIController {
     }
 
     def x1=plat-2
-    def y1=plon-2
     def x2=plat+2
+
+    def y1=plon-2
     def y2=plon+2
 
     println "enrichment_place_latitude:[${x1} TO ${x2}] AND enrichment_place_longitude:[${y1} TO ${y2}]"
