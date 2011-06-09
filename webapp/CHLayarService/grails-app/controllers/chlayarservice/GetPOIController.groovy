@@ -44,7 +44,9 @@ class GetPOIController {
       def hotspots = []
 
       result_object.identifier = ""
+      result_object.layer = 'culturalheritagelayer'
       result_object.hotspots = hotspots
+
       //result_object.hotspots = [
       //  [ identifier:"id",
       //    distance:"Distance",
@@ -56,8 +58,8 @@ class GetPOIController {
       //  ]
       //]
 
-      // result_object.errorCode = ""
-      // result_object.errorString = ""
+      result_object.errorCode = 0
+      result_object.errorString = "ok"
       // result_object.nextPageKey = ""
       // result_object.morePages = ""
       // result_object.radius = ""
