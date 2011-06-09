@@ -94,9 +94,11 @@ class GetPOIController {
     def x2=plat+2
     def y2=plon+2
 
+    println "enrichment_place_latitude:[${x1} TO ${x2}] AND enrichment_place_longitude:[${y1} TO ${y2}]"
+
     def europeana_search_result = europeanaRestBuilder.get( path : "/api/opensearch.rss", 
                                                             query : ['wskey' : ApplicationHolder.application.config.apikey,
-                                                                      'searchTerms' : 'enrichment_place_latitude:[${x1} TO ${x2}] AND enrichment_place_longitude:[${y1} TO ${y2}]'
+                                                                      'searchTerms' : "enrichment_place_latitude:[${x1} TO ${x2}] AND enrichment_place_longitude:[${y1} TO ${y2}]"
                                                                      ],
                                                              contentType: ContentType.XML )
 
