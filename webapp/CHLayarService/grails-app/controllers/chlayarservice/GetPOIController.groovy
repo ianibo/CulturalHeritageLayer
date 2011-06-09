@@ -89,10 +89,10 @@ class GetPOIController {
       plon = 0.2197265625
     }
 
-    def x1=plat-0.1
-    def y1=plon-0.1
-    def x2=plat+0.1
-    def y2=plon-0.1
+    def x1=plat-2
+    def y1=plon-2
+    def x2=plat+2
+    def y2=plon+2
 
     def europeana_search_result = europeanaRestBuilder.get( path : "/api/opensearch.rss", 
                                                             query : ['wskey' : ApplicationHolder.application.config.apikey,
